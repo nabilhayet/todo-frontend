@@ -54,3 +54,7 @@
 .header ul li {
   display: inline-block;
 }
+form label {
+  margin-left: 0px;
+  text-align: left;
+}
