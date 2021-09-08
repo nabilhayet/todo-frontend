@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 //import axios from 'axios'
 
 
-class LoginUser extends Component {
+class RegisterUser extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -92,4 +92,4 @@ export default connect(null, mapDispatchToProps)(CreateAuthor)
 
 */
 
-export default LoginUser;
+export default RegisterUser;

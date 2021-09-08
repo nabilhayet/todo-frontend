@@ -1,7 +1,9 @@
 import './App.css';
 import Home from './Home';
 import LoginUser from './LoginUser';
+import RegisterUser from './RegisterUser';
 import Navbar from './Navbar';
+
 
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -16,6 +18,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/users/login" component={LoginUser} />
+          <Route exact path="/users/register" component={RegisterUser} />
         </Switch>
       </div>
     </Router >
