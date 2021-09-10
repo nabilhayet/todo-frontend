@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-import addUser from '../../actions/users'
+import addUser from '../src/actions/users'
 
 //import { Redirect } from 'react-router-dom'
 //import { connect } from 'react-redux'
@@ -32,8 +32,8 @@ class RegisterUser extends Component {
     registerUser = (event) => {
         let registerBody = {}
         registerBody = {
-            email: event.target.value,
-            password: event.target.value
+            email: this.state.email,
+            password: this.state.password
         }
         const configobj = {
             method: 'POST',
@@ -46,12 +46,10 @@ class RegisterUser extends Component {
             }
         }
         fetch('http://localhost:3000/users', configobj)
-            .then(response => console.log(response.json()))
+            .then(response => response.json())
             .then(user => {
                 this.props.addUser(user)
                 this.setState({
-                    email: user.email,
-                    password: user.password,
                     id: user.id,
                     gotUser: true
                 })
@@ -88,6 +86,9 @@ class RegisterUser extends Component {
                     </p>
                     <input type="submit" class="btn" />
                 </form>
+                {this.state.gotUser && (
+                    <Redirect to={`/users/${this.state.id}`} />
+                )}
             </div>
         );
     }
@@ -100,4 +101,5 @@ const mapDispatchToProps = dispatch => {
         addUser: user => { dispatch(addUser(user)) }
     }
 }
-export default connect(null, mapDispatchToProps)(CreateUser);
+
+export default connect(null, mapDispatchToProps)(RegisterUser);
