@@ -1,4 +1,8 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
+import addUser from '../../actions/users'
+
 //import { Redirect } from 'react-router-dom'
 //import { connect } from 'react-redux'
 //import axios from 'axios'
@@ -9,7 +13,9 @@ class RegisterUser extends Component {
         super(props)
         this.state = {
             email: "",
-            password: ""
+            password: "",
+            id: "",
+            gotUser: false
         }
     }
     handleChange = (event) => {
@@ -19,31 +25,35 @@ class RegisterUser extends Component {
     }
     handleSubmit = (event) => {
         event.preventDefault()
-        this.loginUser(event)
+        this.registerUser(event)
     }
 
 
-    loginUser = (event) => {
-        let loginBody = {}
-        loginBody = {
+    registerUser = (event) => {
+        let registerBody = {}
+        registerBody = {
             email: event.target.value,
             password: event.target.value
         }
         const configobj = {
             method: 'POST',
-            body: JSON.stringify(loginBody),
+            body: JSON.stringify(registerBody),
 
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Access-Control-Allow-Origin': 'http://localhost:3000'
+                'Accept': 'application/json'
+
             }
         }
-        fetch('http://dev.rapptrlabs.com/Tests/scripts/user-login.php', configobj)
+        fetch('http://localhost:3000/users', configobj)
             .then(response => console.log(response.json()))
             .then(user => {
+                this.props.addUser(user)
                 this.setState({
-                    email: user.email
+                    email: user.email,
+                    password: user.password,
+                    id: user.id,
+                    gotUser: true
                 })
             })
     };
@@ -83,13 +93,11 @@ class RegisterUser extends Component {
     }
 };
 
-/* const mapDispatchToProps = dispatch => {
+
+
+const mapDispatchToProps = dispatch => {
     return {
-        addAuthor: author => { dispatch(addAuthor(author)) }
+        addUser: user => { dispatch(addUser(user)) }
     }
 }
-export default connect(null, mapDispatchToProps)(CreateAuthor)
-
-*/
-
-export default RegisterUser;
+export default connect(null, mapDispatchToProps)(CreateUser);

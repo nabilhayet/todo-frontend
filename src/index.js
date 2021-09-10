@@ -1,22 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-//import './index.css';
 import reportWebVitals from './reportWebVitals';
-//import { createStore, applyMiddleware } from 'redux';
-//import thunk from 'redux-thunk';
-//import { Provider } from 'react-redux';
-//import { combineReducers } from "redux";
+
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
+import usersReducer from './reducers/usersReducer.js';
+import todosReducer from './reducers/todosReducer.js';
+import { combineReducers } from "redux";
+
 import App from './App';
 
+const rootReducer = combineReducers({
+  todos: todosReducer,
+  users: usersReducer
+})
 
 
-
+const store = createStore(rootReducer, applyMiddleware(thunk))
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />,
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
+
+export default rootReducer;
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
