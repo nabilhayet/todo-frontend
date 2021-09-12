@@ -32,8 +32,8 @@ class LoginUser extends Component {
     loginUser = (event) => {
         let loginBody = {}
         loginBody = {
-            email: event.target.value,
-            password: event.target.value
+            email: this.state.email,
+            password: this.state.password
         }
         const configobj = {
             method: 'POST',
@@ -48,7 +48,7 @@ class LoginUser extends Component {
         fetch('http://localhost:3000/user/login', configobj)
             .then(response => (response.json()))
             .then(user => {
-                if (user.error) {
+                if (user.status === 'error') {
                     this.setState({
                         message: "Wrong email or password"
                     })
@@ -64,9 +64,15 @@ class LoginUser extends Component {
     };
 
 
+
+
+
+
     render() {
+        const renderUser = this.state.gotUser
         return (
             <div>
+                {renderUser ? <Redirect to={`/users/${this.state.id}`} /> : this.state.message}
                 <h1>Rapptr Labs</h1>
                 <form onSubmit={event => this.handleSubmit(event)}>
                     <p>
@@ -77,7 +83,7 @@ class LoginUser extends Component {
                             name="email"
                             onChange={this.handleChange}
                             placeholder="user@rapptrlabs.com"
-                            value={this.state.email} required
+                            value={this.state.email}
                         />
 
                     </p>
@@ -89,7 +95,8 @@ class LoginUser extends Component {
                             name="password"
                             onChange={event => this.handleChange(event)}
                             placeholder="Must be at least 4 characters"
-                            value={this.state.password} required />
+                            value={this.state.password}
+                        />
                     </p>
                     <input type="submit" class="btn" />
                 </form>

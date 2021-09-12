@@ -49,9 +49,10 @@ class RegisterUser extends Component {
         fetch('http://localhost:3000/users', configobj)
             .then(response => response.json())
             .then(user => {
-                if (user.error) {
+                debugger
+                if (user.status === 'error') {
                     this.setState({
-                        message: "Wrong email or password"
+                        message: "Invalid email or password"
                     })
                 } else {
                     this.props.addUser(user)
@@ -68,8 +69,10 @@ class RegisterUser extends Component {
 
 
     render() {
+        const renderUser = this.state.gotUser
         return (
             <div>
+                {renderUser ? <Redirect to={`/users/${this.state.id}`} /> : this.state.message}
                 <h1>Rapptr Labs</h1>
                 <form onSubmit={event => this.handleSubmit(event)}>
                     <p>

@@ -8,7 +8,9 @@ function ShowUser(props) {
 
 
     return (
+
         <div>
+            {props.match.params.id}
             <button>Logout</button>
         </div>
     )
