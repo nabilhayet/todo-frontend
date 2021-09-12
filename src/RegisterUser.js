@@ -15,7 +15,8 @@ class RegisterUser extends Component {
             email: "",
             password: "",
             id: "",
-            gotUser: false
+            gotUser: false,
+            message: ""
         }
     }
     handleChange = (event) => {
@@ -48,13 +49,22 @@ class RegisterUser extends Component {
         fetch('http://localhost:3000/users', configobj)
             .then(response => response.json())
             .then(user => {
-                this.props.addUser(user)
-                this.setState({
-                    id: user.id,
-                    gotUser: true
-                })
+                if (user.error) {
+                    this.setState({
+                        message: "Wrong email or password"
+                    })
+                } else {
+                    this.props.addUser(user)
+                    this.setState({
+                        id: user.id,
+                        gotUser: true
+                    })
+                }
+
             })
     };
+
+
 
 
     render() {

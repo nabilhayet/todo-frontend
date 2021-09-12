@@ -5,7 +5,7 @@ import RegisterUser from './RegisterUser';
 import Navbar from './Navbar';
 
 //import CreateUser from './components/users/CreateUser';
-import ShowUser from './components/users/ShowUser'
+import ShowUser from './components/users/ShowUser';
 
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -21,7 +21,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.fetchEverything()
+    this.fetchEverything();
   }
   render() {
     return (
@@ -33,6 +33,7 @@ class App extends Component {
             <Route exact path="/users/login" component={LoginUser} />
             <Route exact path="/users/register" component={RegisterUser} />
             <Route exact path='/users/:id' render={routerProps => <ShowUser {...routerProps} />} />
+
           </Switch>
         </div>
       </Router >
@@ -42,13 +43,13 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    users: state.users,
+    users: state.users
     // todos: state.todos
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
-    getUsers: () => { dispatch(getUsers()) },
+    getUsers: () => { dispatch(getUsers()) }
     //  getTodos: () => { dispatch(getTodos()) }
   }
 }

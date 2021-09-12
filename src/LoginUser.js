@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 //import { Redirect } from 'react-router-dom'
 //import { connect } from 'react-redux'
 //import axios from 'axios'
+import { Redirect } from 'react-router-dom'
+// import { connect } from 'react-redux'
+// import addUser from '../src/actions/users'
 
 
 class LoginUser extends Component {
@@ -9,7 +12,10 @@ class LoginUser extends Component {
         super(props)
         this.state = {
             email: "",
-            password: ""
+            password: "",
+            id: "",
+            gotUser: false,
+            message: ""
         }
     }
     handleChange = (event) => {
@@ -35,16 +41,25 @@ class LoginUser extends Component {
 
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Access-Control-Allow-Origin': 'http://localhost:3000'
+                'Accept': 'application/json'
+
             }
         }
-        fetch('http://dev.rapptrlabs.com/Tests/scripts/user-login.php', configobj)
-            .then(response => console.log(response.json()))
+        fetch('http://localhost:3000/user/login', configobj)
+            .then(response => (response.json()))
             .then(user => {
-                this.setState({
-                    email: user.email
-                })
+                if (user.error) {
+                    this.setState({
+                        message: "Wrong email or password"
+                    })
+
+                } else {
+                    this.setState({
+                        id: user.id,
+                        gotUser: true
+                    })
+                }
+
             })
     };
 
@@ -78,6 +93,9 @@ class LoginUser extends Component {
                     </p>
                     <input type="submit" class="btn" />
                 </form>
+                {this.state.gotUser && (
+                    <Redirect to={`/users/${this.state.id}`} />
+                )}
             </div>
         );
     }
