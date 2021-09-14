@@ -18,7 +18,9 @@ class RegisterUser extends Component {
             password: "",
             id: "",
             gotUser: false,
-            message: ""
+            message: "",
+            emailError: "",
+            passwordError: ""
         }
     }
     handleChange = (event) => {
@@ -28,7 +30,44 @@ class RegisterUser extends Component {
     }
     handleSubmit = (event) => {
         event.preventDefault()
-        this.registerUser(event)
+        const isValid = this.validate();
+        if (isValid) {
+            this.registerUser(event)
+        }
+        this.setState({
+            email: "",
+            password: ""
+        })
+
+    }
+
+    validate = () => {
+        let emailError = "";
+        let passwordError = "";
+
+        if (!this.state.email.includes('@')) {
+            emailError = 'Invalid email address'
+        }
+        if (!this.state.email) {
+            emailError = "Email can't be blank!"
+        }
+        if (this.state.email.length > 50) {
+            emailError = "Email length is too long!"
+        }
+        if (this.state.password.length < 4 || this.state.password.length > 16) {
+            passwordError = "Password is invalid!"
+        }
+        if (!this.state.password) {
+            passwordError = "Password can't be blank!"
+        }
+
+
+        if (emailError || passwordError) {
+            this.setState({ emailError, passwordError });
+            return false;
+        }
+
+        return true;
     }
 
 
@@ -85,8 +124,9 @@ class RegisterUser extends Component {
                             name="email"
                             onChange={this.handleChange}
                             placeholder="user@rapptrlabs.com"
-                            value={this.state.email} required
+                            value={this.state.email}
                         />
+                        {this.state.emailError ? <div style={{ fontSize: 10, color: "red" }}>{this.state.emailError}</div> : null}
                     </div>
 
                     <div class="form-input">
@@ -98,6 +138,7 @@ class RegisterUser extends Component {
                             onChange={event => this.handleChange(event)}
                             placeholder="Must be at least 4 characters"
                             value={this.state.password} />
+                        {this.state.passwordError ? <div style={{ fontSize: 10, color: "red" }}>{this.state.passwordError}</div> : null}
                     </div>
 
                     <input type="submit" class="btn" />
