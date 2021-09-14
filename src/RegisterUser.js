@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import addUser from '../src/actions/users'
+import { FaLock, FaUser } from "react-icons/fa"
+import './App.css';
 
 //import { Redirect } from 'react-router-dom'
 //import { connect } from 'react-redux'
@@ -49,7 +51,6 @@ class RegisterUser extends Component {
         fetch('http://localhost:3000/users', configobj)
             .then(response => response.json())
             .then(user => {
-                debugger
                 if (user.status === 'error') {
                     this.setState({
                         message: "Invalid email or password"
@@ -75,9 +76,10 @@ class RegisterUser extends Component {
                 {renderUser ? <Redirect to={`/users/${this.state.id}`} /> : this.state.message}
                 <h1>Rapptr Labs</h1>
                 <form onSubmit={event => this.handleSubmit(event)}>
-                    <p>
+
+                    <div class="form-input">
                         <label>Email</label>
-                        <br></br>
+                        <span class="icon"><FaUser /></span>
                         <input
                             type="text"
                             name="email"
@@ -85,18 +87,19 @@ class RegisterUser extends Component {
                             placeholder="user@rapptrlabs.com"
                             value={this.state.email} required
                         />
+                    </div>
 
-                    </p>
-                    <p>
+                    <div class="form-input">
                         <label>Password</label>
-                        <br></br>
+                        <span class="icon"><FaLock /></span>
                         <input
                             type="password"
                             name="password"
                             onChange={event => this.handleChange(event)}
                             placeholder="Must be at least 4 characters"
-                            value={this.state.password} required />
-                    </p>
+                            value={this.state.password} />
+                    </div>
+
                     <input type="submit" class="btn" />
                 </form>
                 {this.state.gotUser && (

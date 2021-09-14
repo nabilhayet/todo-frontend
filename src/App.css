@@ -54,7 +54,47 @@
 .header ul li {
   display: inline-block;
 }
-form label {
-  margin-left: 0px;
-  text-align: left;
+
+.form-input {
+  margin-bottom: 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 10px 0;
+}
+
+input {
+  border: 2px solid #eee;
+  padding: 5px 10px 5px 50px;
+  font-size: 18px;
+  line-height: 30px;
+  display: block;
+  width: 50%;
+  outline: 0;
+  
+}
+
+.icon {
+  position: absolute;
+  left: 290px;
+  top: 0;
+  font-size: 25px;
+  color: black;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+label {
+  margin-bottom: 50px;
+ 
+}
+
+input[type="submit"] {
+ width: 10%;
+ margin-left: 400px;
+ text-align: center;
+ padding-left: 0;
 }
