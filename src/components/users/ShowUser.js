@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-//import { Redirect } from 'react-router';
-//import App from '../../App';
+import { Redirect } from 'react-router';
+import App from '../../App';
 //import Home from '../../Home'
 //import Navbar from '../../Navbar';
 //import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -12,43 +12,74 @@ class ShowUser extends Component {
         this.state = {
             id: "",
             gotUser: false,
-            message: ""
+            message: "",
+            logoutMessage: "",
+            currentUser: [],
+            islogout: false
         }
     }
 
     componentDidMount() {
-        fetch(`http://localhost:3000/users/${this.props.match.params.id}`)
-            .then(response => response.json())
-            .then(user => {
-                if (user.status === 'error') {
-                    this.setState({
-                        message: "You don't have access"
-                    })
-                } else {
-                    this.setState({
-                        id: user.id,
-                        gotUser: true
-                    })
+        const token = localStorage.getItem("token")
+        if (token) {
+            fetch(`http://localhost:3000/users/${this.props.match.params.id}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
                 }
-
             })
+                .then(response => response.json())
+                .then(r => {
+                    if (r.error) {
+                        this.setState({
+                            message: "You don't have access"
+                        })
+                    } else {
+                        this.setState({
+                            gotUser: true,
+                            id: r.user.id
+                        })
+                    }
+
+                })
+        } else {
+            this.setState({
+                message: "You don't have access"
+            })
+        }
     }
 
+    handleLogout = (event) => {
+        event.preventDefault()
+        localStorage.removeItem("token")
+        this.setState({
+            logoutMessage: "You have successfully logged out!",
+            islogout: true
+        })
 
-    //  handleLogout = () => {
-    //      "Hahah"
-    //  }
+    }
+
+    createButton = () => {
+        return (
+            <div>
+                <button onClick={this.handleLogout}>Logout</button>
+                <button onClick={this.addTodo}>Add Todo</button>
+            </div>
+        )
+    }
 
     render() {
         const findUser = this.state.gotUser
+        const isLogout = this.state.islogout
         return (
             <div>
-                {findUser ? <button>Logout</button> : this.state.message}
+                {findUser ? this.createButton() : this.state.message}
+                {isLogout ? <Redirect to={`/users/login`} /> : ""}
             </div>
 
-        )
+        );
     }
-}
+};
 
 
 
@@ -60,3 +91,29 @@ const mapStateToProps = (state) => {
     };
 };
 export default connect(mapStateToProps)(ShowUser);
+
+
+// const configobj = {
+    //     method: 'DELETE',
+    //     credentials: "include",
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'Accept': 'application/json'
+
+    //     }
+    // }
+
+    // fetch("http://localhost:3000/logout", configobj)
+    //     .then(res => res.json())
+    //     .then(r => {
+    //         if (r.status === 'ok') {
+    //             this.setState({
+    //                 logoutMessage: "You have successfully logged out"
+    //             })
+
+    //         } else {
+    //             this.setState({
+    //                 logoutMessage: "Something went wrong!"
+    //             })
+    //         }
+    //     })

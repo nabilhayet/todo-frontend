@@ -46,7 +46,7 @@ class LoginUser extends Component {
             }
         }
         fetch('http://localhost:3000/user/login', configobj)
-            .then(response => (response.json()))
+            .then(response => response.json())
             .then(user => {
                 if (user.status === 'error') {
                     this.setState({
@@ -54,10 +54,19 @@ class LoginUser extends Component {
                     })
 
                 } else {
-                    this.setState({
-                        id: user.id,
-                        gotUser: true
-                    })
+                    debugger
+                    if (user.jwt !== undefined) {
+                        localStorage.setItem("token", user.jwt)
+                        this.setState({
+                            id: user.user.id,
+                            gotUser: true
+                        })
+                    }
+                    else {
+                        this.setState({
+                            message: "You Don't have access"
+                        })
+                    }
                 }
 
             })

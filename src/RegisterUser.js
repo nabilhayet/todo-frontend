@@ -95,9 +95,10 @@ class RegisterUser extends Component {
                         message: "Invalid email or password"
                     })
                 } else {
-                    this.props.addUser(user)
+                    localStorage.setItem("jwt", user.jwt);
+                    this.props.addUser(user.user)
                     this.setState({
-                        id: user.id,
+                        id: user.user.id,
                         gotUser: true
                     })
                 }
