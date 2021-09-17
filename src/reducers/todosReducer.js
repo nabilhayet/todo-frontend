@@ -13,7 +13,7 @@ export default function todosReducer(state = { todos: [] }, action) {
             newState.splice(idx, 1, action.todo);
             return { ...state, todos: newState }
         case "DELETE_TODO":
-            idx = state.todos.findIndex(todo => todo.id == action.id);
+            idx = state.todos.findIndex(todo => todo.id === action.id);
             return { ...state, todos: [...state.todos.slice(0, idx), ...state.todos.slice(idx + 1)] };
         default:
             return state;

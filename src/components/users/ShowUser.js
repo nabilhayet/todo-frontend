@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import App from '../../App';
-import todosReducer from '../../reducers/todosReducer';
+import addTodo from '../../actions/todos';
+import getTodos from '../../actions/getTodos';
+import deleteTodo from '../../actions/deleteTodo';
+import updateTodo from '../../actions/updateTodo';
 
 //import Home from '../../Home'
 //import Navbar from '../../Navbar';
@@ -20,7 +23,10 @@ class ShowUser extends Component {
             islogout: false,
             name: "",
             gotTodo: false,
-            todo_id: ""
+            todo_id: "",
+            count: 0,
+            currentTodos: [],
+            createNewTodoForm: false
         }
     }
 
@@ -43,7 +49,10 @@ class ShowUser extends Component {
                         this.setState({
                             gotUser: true,
                             id: r.user.id
+
+
                         })
+
                     }
 
                 })
@@ -64,11 +73,17 @@ class ShowUser extends Component {
 
     }
 
+    addTodoForm = (event) => {
+        this.setState({
+            createNewTodoForm: true
+        })
+    }
+
     createButton = () => {
         return (
             <div>
                 <button onClick={this.handleLogout}>Logout</button>
-                <button onClick={this.addTodo}>New</button>
+                <button onClick={this.addTodoForm}>New</button>
             </div>
         )
     }
@@ -81,32 +96,40 @@ class ShowUser extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault()
-        const todo = { name: this.state.name, id: this.state.id }
+        this.setState({
+            count: this.state.count += 1
+        })
+        const todo = { id: this.state.count, name: this.state.name, user_id: this.state.id }
         this.props.addTodo(todo)
         this.setState({
             gotTodo: true,
-            todo_id: todo.id
+            todo_id: this.state.count,
+            name: ""
         })
+
     }
 
     render() {
-        <h1>My To-Do List</h1>
+        const todoForm = this.state.createNewTodoForm
         const findUser = this.state.gotUser
         const isLogout = this.state.islogout
+        const gotTodo = this.state.gotTodo
+        const getAllTodos = this.props.todos.filter((todo) => todo.user_id === this.state.id)
+        const AllTodos = getAllTodos.map((todo) => {
+            return (
+                <li key={todo.id}>{todo.name}</li>
+            )
+        })
         return (
             <div>
+                <h1>My To-Do List</h1>
                 <div>
                     {findUser ? this.createButton() : this.state.message}
                     {isLogout ? <Redirect to={`/users/login`} /> : ""}
-                </div>
-                <div>
-                    <form onSubmit={event => this.handleSubmit(event)}>
-                        <p>
-                            <input type="text" id="name" onChange={event => this.handleChange(event)}
-                                value={this.state.name} required />
-                        </p>
-                        <input type="submit" class="btn" />
-                    </form>
+                    {todoForm ? <form onSubmit={event => this.handleSubmit(event)}>
+                        <p><input type="text" id="name" onChange={event => this.handleChange(event)} value={this.state.name} required /></p>
+                        <input type="submit" class="btn" /></form> : ""}
+                    {AllTodos}
                 </div>
             </div>
 

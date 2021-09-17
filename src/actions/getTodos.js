@@ -1,6 +1,5 @@
-export default function getTodos(todo) {
+export default function getTodos() {
     return {
-        type: 'GET_TODOS',
-        todo: todo
+        type: 'GET_TODOS'
     }
 }
