@@ -54,7 +54,6 @@ class LoginUser extends Component {
                     })
 
                 } else {
-                    debugger
                     if (user.jwt !== undefined) {
                         localStorage.setItem("token", user.jwt)
                         this.setState({

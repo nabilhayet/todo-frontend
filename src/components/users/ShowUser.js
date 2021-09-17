@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import App from '../../App';
+import todosReducer from '../../reducers/todosReducer';
+
 //import Home from '../../Home'
 //import Navbar from '../../Navbar';
 //import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -15,7 +17,10 @@ class ShowUser extends Component {
             message: "",
             logoutMessage: "",
             currentUser: [],
-            islogout: false
+            islogout: false,
+            name: "",
+            gotTodo: false,
+            todo_id: ""
         }
     }
 
@@ -63,18 +68,46 @@ class ShowUser extends Component {
         return (
             <div>
                 <button onClick={this.handleLogout}>Logout</button>
-                <button onClick={this.addTodo}>Add Todo</button>
+                <button onClick={this.addTodo}>New</button>
             </div>
         )
     }
 
+    handleChange = event => {
+        this.setState({
+            [event.target.id]: event.target.value
+        })
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault()
+        const todo = { name: this.state.name, id: this.state.id }
+        this.props.addTodo(todo)
+        this.setState({
+            gotTodo: true,
+            todo_id: todo.id
+        })
+    }
+
     render() {
+        <h1>My To-Do List</h1>
         const findUser = this.state.gotUser
         const isLogout = this.state.islogout
         return (
             <div>
-                {findUser ? this.createButton() : this.state.message}
-                {isLogout ? <Redirect to={`/users/login`} /> : ""}
+                <div>
+                    {findUser ? this.createButton() : this.state.message}
+                    {isLogout ? <Redirect to={`/users/login`} /> : ""}
+                </div>
+                <div>
+                    <form onSubmit={event => this.handleSubmit(event)}>
+                        <p>
+                            <input type="text" id="name" onChange={event => this.handleChange(event)}
+                                value={this.state.name} required />
+                        </p>
+                        <input type="submit" class="btn" />
+                    </form>
+                </div>
             </div>
 
         );
@@ -83,37 +116,15 @@ class ShowUser extends Component {
 
 
 
-const mapStateToProps = (state) => {
-
+const mapDispatchToProps = dispatch => {
     return {
-        users: state.users.users,
-        // books: state.books.books
+        addTodo: todo => { dispatch(addTodo(todo)) }
+    }
+}
+const mapStateToProps = (state) => {
+    return {
+        todos: state.todos.todos
     };
 };
-export default connect(mapStateToProps)(ShowUser);
 
-
-// const configobj = {
-    //     method: 'DELETE',
-    //     credentials: "include",
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'Accept': 'application/json'
-
-    //     }
-    // }
-
-    // fetch("http://localhost:3000/logout", configobj)
-    //     .then(res => res.json())
-    //     .then(r => {
-    //         if (r.status === 'ok') {
-    //             this.setState({
-    //                 logoutMessage: "You have successfully logged out"
-    //             })
-
-    //         } else {
-    //             this.setState({
-    //                 logoutMessage: "Something went wrong!"
-    //             })
-    //         }
-    //     })
+export default connect(mapStateToProps, mapDispatchToProps)(ShowUser);
