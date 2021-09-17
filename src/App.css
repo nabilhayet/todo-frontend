@@ -76,6 +76,10 @@ input {
   
 }
 
+.todo {
+  margin-top: 20px;
+}
+
 .icon {
   position: absolute;
   left: 290px;

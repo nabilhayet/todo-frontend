@@ -15,6 +15,8 @@ export default function todosReducer(state = { todos: [] }, action) {
         case "DELETE_TODO":
             idx = state.todos.findIndex(todo => todo.id === action.id);
             return { ...state, todos: [...state.todos.slice(0, idx), ...state.todos.slice(idx + 1)] };
+        case "CLEAR_TODOS":
+            return { ...state, todos: action.todos };
         default:
             return state;
     }

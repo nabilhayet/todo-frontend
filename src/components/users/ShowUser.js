@@ -1,15 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-import App from '../../App';
+// import App from '../../App';
 import addTodo from '../../actions/todos';
-import getTodos from '../../actions/getTodos';
+//import getTodos from '../../actions/getTodos';
 import deleteTodo from '../../actions/deleteTodo';
 import updateTodo from '../../actions/updateTodo';
+import { Link } from 'react-router-dom';
+import clearTodo from '../../actions/clearTodo';
 
 //import Home from '../../Home'
 //import Navbar from '../../Navbar';
 //import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+const link = {
+    width: '100px',
+    padding: '12px',
+    margin: '20px 50px 6px',
+    background: 'yellow',
+    color: 'black',
+    display: 'inline-block'
+
+}
 
 class ShowUser extends Component {
     constructor(props) {
@@ -29,6 +41,8 @@ class ShowUser extends Component {
             createNewTodoForm: false
         }
     }
+
+
 
     componentDidMount() {
         const token = localStorage.getItem("token")
@@ -66,6 +80,7 @@ class ShowUser extends Component {
     handleLogout = (event) => {
         event.preventDefault()
         localStorage.removeItem("token")
+        this.props.clearTodo()
         this.setState({
             logoutMessage: "You have successfully logged out!",
             islogout: true
@@ -97,7 +112,7 @@ class ShowUser extends Component {
     handleSubmit = (event) => {
         event.preventDefault()
         this.setState({
-            count: this.state.count += 1
+            count: this.state.count + 1
         })
         const todo = { id: this.state.count, name: this.state.name, user_id: this.state.id }
         this.props.addTodo(todo)
@@ -109,6 +124,17 @@ class ShowUser extends Component {
 
     }
 
+    // handleUpdate = (todo) => {
+    //     <form onSubmit={event => this.handleUpdateTodo(event)}>
+    //         <p><input type="text"
+    //             id="name"
+    //             onChange={event => this.handleChange(event)}
+    //             value={this.state.name} required />
+    //         </p>
+    //         <input type="submit" class="btn" /></form>
+
+    // }
+
     render() {
         const todoForm = this.state.createNewTodoForm
         const findUser = this.state.gotUser
@@ -117,7 +143,11 @@ class ShowUser extends Component {
         const getAllTodos = this.props.todos.filter((todo) => todo.user_id === this.state.id)
         const AllTodos = getAllTodos.map((todo) => {
             return (
-                <li key={todo.id}>{todo.name}</li>
+                <div class="todo">
+                    <li key={todo.id}>{todo.name}</li>
+                    <Link key={todo.id} style={link}><button id={todo.id}>UPDATE</button></Link>
+                    <Link key={todo.id} style={link}><button id={todo.id}>DELETE</button></Link>
+                </div>
             )
         })
         return (
@@ -141,7 +171,8 @@ class ShowUser extends Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addTodo: todo => { dispatch(addTodo(todo)) }
+        addTodo: todo => { dispatch(addTodo(todo)) },
+        clearTodo: () => { dispatch(clearTodo()) }
     }
 }
 const mapStateToProps = (state) => {
