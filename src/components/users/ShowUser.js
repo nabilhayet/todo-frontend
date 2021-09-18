@@ -38,7 +38,9 @@ class ShowUser extends Component {
             todo_id: "",
             count: 0,
             currentTodos: [],
-            createNewTodoForm: false
+            createNewTodoForm: false,
+            search: "",
+            searchedTodo: false
         }
     }
 
@@ -94,11 +96,44 @@ class ShowUser extends Component {
         })
     }
 
+    handleSearchClear = () => {
+        this.setState({
+            ...this.state, currentTodos: this.props.todos, message: '', search: '', searchedTodo: false
+        })
+    }
+
+    onChange(event) {
+        this.setState({
+            search: event.target.value
+        })
+    }
+
+    onClick(event) {
+        if (this.state.search !== '') {
+            const searchBook = this.props.todos.filter((todo) => todo.name === this.state.search)
+            if (searchBook.length !== 0) {
+                this.setState({
+                    ...this.state, currentTodos: searchBook, searchedTodo: true
+                })
+            }
+            else {
+                this.setState({
+                    ...this.state, message: 'No Match'
+                })
+            }
+
+        }
+
+    }
+
     createButton = () => {
         return (
             <div>
                 <button onClick={this.handleLogout}>Logout</button>
                 <button onClick={this.addTodoForm}>New</button>
+                <button onClick={this.handleSearchClear}>Clear</button>
+                <input type="text" placeholder="search" value={this.state.search} onChange={(event) => this.onChange(event)} />
+                <button onClick={(event) => this.onClick(event)}>Search</button>
             </div>
         )
     }
@@ -140,6 +175,9 @@ class ShowUser extends Component {
         const findUser = this.state.gotUser
         const isLogout = this.state.islogout
         const gotTodo = this.state.gotTodo
+        const searchTodo = this.state.searchedTodo
+
+
         const getAllTodos = this.props.todos.filter((todo) => todo.user_id === this.state.id)
         const AllTodos = getAllTodos.map((todo) => {
             return (
@@ -150,6 +188,17 @@ class ShowUser extends Component {
                 </div>
             )
         })
+
+        const filterTodos = this.state.currentTodos.map((todo) => {
+            return (
+                <div class="todo">
+                    <li key={todo.id}>{todo.name}</li>
+                </div>
+            )
+        })
+
+
+
         return (
             <div>
                 <h1>My To-Do List</h1>
@@ -159,7 +208,7 @@ class ShowUser extends Component {
                     {todoForm ? <form onSubmit={event => this.handleSubmit(event)}>
                         <p><input type="text" id="name" onChange={event => this.handleChange(event)} value={this.state.name} required /></p>
                         <input type="submit" class="btn" /></form> : ""}
-                    {AllTodos}
+                    {searchTodo ? filterTodos : AllTodos}
                 </div>
             </div>
 
