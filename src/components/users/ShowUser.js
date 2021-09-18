@@ -36,17 +36,21 @@ class ShowUser extends Component {
             name: "",
             gotTodo: false,
             todo_id: "",
-            count: 0,
+            count: 1,
             currentTodos: [],
             createNewTodoForm: false,
             search: "",
-            searchedTodo: false
+            searchedTodo: false,
+            todoDelete: false
         }
     }
 
 
 
     componentDidMount() {
+        this.setState({
+            ...this.state, currentTodos: this.props.todos
+        })
         const token = localStorage.getItem("token")
         if (token) {
             fetch(`http://localhost:3000/users/${this.props.match.params.id}`, {
@@ -126,6 +130,7 @@ class ShowUser extends Component {
 
     }
 
+
     createButton = () => {
         return (
             <div>
@@ -170,21 +175,24 @@ class ShowUser extends Component {
 
     // }
 
+    handleDeleteTodo = (event) => {
+        event.preventDefault()
+        this.props.deleteTodo(event.target.id)
+    }
     render() {
         const todoForm = this.state.createNewTodoForm
         const findUser = this.state.gotUser
         const isLogout = this.state.islogout
         const gotTodo = this.state.gotTodo
         const searchTodo = this.state.searchedTodo
-
-
+        const todoDelete = this.state.todoDelete
         const getAllTodos = this.props.todos.filter((todo) => todo.user_id === this.state.id)
         const AllTodos = getAllTodos.map((todo) => {
             return (
                 <div class="todo">
                     <li key={todo.id}>{todo.name}</li>
                     <Link key={todo.id} style={link}><button id={todo.id}>UPDATE</button></Link>
-                    <Link key={todo.id} style={link}><button id={todo.id}>DELETE</button></Link>
+                    <Link key={todo.id} style={link}><button id={todo.id} onClick={this.handleDeleteTodo}>DELETE</button></Link>
                 </div>
             )
         })
@@ -196,9 +204,6 @@ class ShowUser extends Component {
                 </div>
             )
         })
-
-
-
         return (
             <div>
                 <h1>My To-Do List</h1>
@@ -221,7 +226,8 @@ class ShowUser extends Component {
 const mapDispatchToProps = dispatch => {
     return {
         addTodo: todo => { dispatch(addTodo(todo)) },
-        clearTodo: () => { dispatch(clearTodo()) }
+        clearTodo: () => { dispatch(clearTodo()) },
+        deleteTodo: id => { dispatch(deleteTodo(id)) }
     }
 }
 const mapStateToProps = (state) => {

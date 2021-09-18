@@ -1,6 +1,6 @@
-export default function deleteTodo(todo) {
+export default function deleteTodo(id) {
     return {
-        type: 'ADD_TODO',
-        todo: todo
+        type: 'DELETE_TODO',
+        id: id
     }
 }
