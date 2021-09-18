@@ -8,7 +8,7 @@ export default function todosReducer(state = { todos: [] }, action) {
         case "GET_TODOS":
             return { ...state, todos: action.todos };
         case "UPDATE_TODO":
-            idx = state.todos.findIndex(todo => todo.id === action.todo.id);
+            idx = state.todos.findIndex(todo => todo.id == action.todo.id);
             const newState = [...state.todos]
             newState.splice(idx, 1, action.todo);
             return { ...state, todos: newState }

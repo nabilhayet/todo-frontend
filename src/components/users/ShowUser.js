@@ -10,8 +10,8 @@ import { Link } from 'react-router-dom';
 import clearTodo from '../../actions/clearTodo';
 
 //import Home from '../../Home'
-//import Navbar from '../../Navbar';
-//import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Navbar from '../../Navbar';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 const link = {
     width: '100px',
@@ -41,7 +41,11 @@ class ShowUser extends Component {
             createNewTodoForm: false,
             search: "",
             searchedTodo: false,
-            todoDelete: false
+            todoDelete: false,
+            updateTodo: false,
+            t_id: "",
+            t_name: "",
+            t_user: ""
         }
     }
 
@@ -164,17 +168,54 @@ class ShowUser extends Component {
 
     }
 
-    // handleUpdate = (todo) => {
-    //     <form onSubmit={event => this.handleUpdateTodo(event)}>
-    //         <p><input type="text"
-    //             id="name"
-    //             onChange={event => this.handleChange(event)}
-    //             value={this.state.name} required />
-    //         </p>
-    //         <input type="submit" class="btn" /></form>
-
+    // getTodo = (event) => {
+    //     const todo = this.props.todos.filter(t => t.id == event.target.id)
+    //     this.setState({
+    //         t_id: todo.id,
+    //         t_name: todo[0].name,
+    //         t_user: todo[0].user_id
+    //     })
+    //     const e = event
+    //     this.handleUpdate(e)
     // }
 
+    handleUpdateTodo = (event) => {
+        event.preventDefault()
+        const todo = { id: this.state.t_id, name: this.state.t_name, user_id: this.state.t_user }
+        this.props.updateTodo(todo)
+    }
+    handleOnChange = (event) => {
+        this.setState({
+            [event.target.id]: event.target.value
+        })
+    }
+    // handleUpdate = (event) => {
+    //     const todo = this.props.todos.filter(t => t.id == event.target.id)
+    //     this.setState({
+    //         t_id: todo[0].id,
+    //         t_name: todo[0].name,
+    //         t_user: todo[0].user_id,
+    //         updateTodo: true
+    //     })
+    //     this.addUpdateTodoForm();
+    // }
+    addUpdateTodoForm = (event) => {
+        const todo = this.props.todos.filter(t => t.id == event.target.id)
+        this.setState({
+            t_id: todo[0].id,
+            t_name: todo[0].name,
+            t_user: todo[0].user_id,
+            updateTodo: true
+        });
+        <form onSubmit={event => this.handleUpdateTodo(event)} >
+            <p><input type="text"
+                id="t_name"
+                onChange={event => this.handleOnChange(event)}
+                value={this.state.t_name} required />
+            </p>
+            <input type="submit" class="btn" />
+        </form >
+    }
     handleDeleteTodo = (event) => {
         event.preventDefault()
         this.props.deleteTodo(event.target.id)
@@ -186,12 +227,13 @@ class ShowUser extends Component {
         const gotTodo = this.state.gotTodo
         const searchTodo = this.state.searchedTodo
         const todoDelete = this.state.todoDelete
+        const todoUpdate = this.state.updateTodo
         const getAllTodos = this.props.todos.filter((todo) => todo.user_id === this.state.id)
         const AllTodos = getAllTodos.map((todo) => {
             return (
                 <div class="todo">
                     <li key={todo.id}>{todo.name}</li>
-                    <Link key={todo.id} style={link}><button id={todo.id}>UPDATE</button></Link>
+                    <Link key={todo.id} style={link}><button id={todo.id} onClick={this.addUpdateTodoForm}>UPDATE</button></Link>
                     <Link key={todo.id} style={link}><button id={todo.id} onClick={this.handleDeleteTodo}>DELETE</button></Link>
                 </div>
             )
@@ -214,6 +256,7 @@ class ShowUser extends Component {
                         <p><input type="text" id="name" onChange={event => this.handleChange(event)} value={this.state.name} required /></p>
                         <input type="submit" class="btn" /></form> : ""}
                     {searchTodo ? filterTodos : AllTodos}
+                    {/* {todoUpdate ? this.addUpdateTodoForm() : ""} */}
                 </div>
             </div>
 
@@ -227,7 +270,8 @@ const mapDispatchToProps = dispatch => {
     return {
         addTodo: todo => { dispatch(addTodo(todo)) },
         clearTodo: () => { dispatch(clearTodo()) },
-        deleteTodo: id => { dispatch(deleteTodo(id)) }
+        deleteTodo: id => { dispatch(deleteTodo(id)) },
+        updateTodo: todo => { dispatch(updateTodo(todo)) }
     }
 }
 const mapStateToProps = (state) => {
