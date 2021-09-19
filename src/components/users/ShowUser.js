@@ -45,7 +45,8 @@ class ShowUser extends Component {
             updateTodo: false,
             t_id: "",
             t_name: "",
-            t_user: ""
+            t_user: "",
+            nameError: ""
         }
     }
 
@@ -155,29 +156,36 @@ class ShowUser extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault()
-        this.setState({
-            count: this.state.count + 1
-        })
-        const todo = { id: this.state.count, name: this.state.name, user_id: this.state.id }
-        this.props.addTodo(todo)
-        this.setState({
-            gotTodo: true,
-            todo_id: this.state.count,
-            name: ""
-        })
+        const isValid = this.validate();
+        if (isValid) {
+            this.setState({
+                count: this.state.count + 1
+            })
+            const todo = { id: this.state.count, name: this.state.name, user_id: this.state.id }
+            this.props.addTodo(todo)
+            this.setState({
+                gotTodo: true,
+                todo_id: this.state.count,
+                name: ""
+            })
+        }
+    }
+    validate = () => {
+        let nameError = "";
+        if (this.state.nameError.length < 1 || this.state.nameError.length > 25) {
+            nameError = "Todo must be at least 1 character or less then 25 characters!"
+        }
 
+        if (nameError) {
+            this.setState({ nameError });
+            return false;
+        }
+
+        return true;
     }
 
-    // getTodo = (event) => {
-    //     const todo = this.props.todos.filter(t => t.id == event.target.id)
-    //     this.setState({
-    //         t_id: todo.id,
-    //         t_name: todo[0].name,
-    //         t_user: todo[0].user_id
-    //     })
-    //     const e = event
-    //     this.handleUpdate(e)
-    // }
+
+
 
     handleUpdateTodo = (event) => {
         event.preventDefault()
@@ -189,16 +197,6 @@ class ShowUser extends Component {
             [event.target.id]: event.target.value
         })
     }
-    // handleUpdate = (event) => {
-    //     const todo = this.props.todos.filter(t => t.id == event.target.id)
-    //     this.setState({
-    //         t_id: todo[0].id,
-    //         t_name: todo[0].name,
-    //         t_user: todo[0].user_id,
-    //         updateTodo: true
-    //     })
-    //     this.addUpdateTodoForm();
-    // }
     addUpdateTodoForm = (event) => {
         const todo = this.props.todos.filter(t => t.id == event.target.id)
         this.setState({
@@ -207,15 +205,19 @@ class ShowUser extends Component {
             t_user: todo[0].user_id,
             updateTodo: true
         });
-        <form onSubmit={event => this.handleUpdateTodo(event)} >
-            <p><input type="text"
-                id="t_name"
-                onChange={event => this.handleOnChange(event)}
-                value={this.state.t_name} required />
-            </p>
-            <input type="submit" class="btn" />
-        </form >
     }
+    // return (
+    //     <div>
+    //         <form onSubmit={event => this.handleUpdateTodo(event)} >
+    //             <p><input type="text"
+    //                 id="t_name"
+    //                 onChange={event => this.handleOnChange(event)}
+    //                 value={this.state.t_name} required />
+    //             </p>
+    //             <input type="submit" class="btn" />
+    //         </form >
+    //     </div>
+    // )
     handleDeleteTodo = (event) => {
         event.preventDefault()
         this.props.deleteTodo(event.target.id)
@@ -253,10 +255,19 @@ class ShowUser extends Component {
                     {findUser ? this.createButton() : this.state.message}
                     {isLogout ? <Redirect to={`/users/login`} /> : ""}
                     {todoForm ? <form onSubmit={event => this.handleSubmit(event)}>
-                        <p><input type="text" id="name" onChange={event => this.handleChange(event)} value={this.state.name} required /></p>
+                        <p><input type="text" id="name" onChange={event => this.handleChange(event)} value={this.state.name} />
+                            {this.state.nameError ? <div style={{ fontSize: 10, color: "red" }}>{this.state.nameError}</div> : null}
+                        </p>
                         <input type="submit" class="btn" /></form> : ""}
                     {searchTodo ? filterTodos : AllTodos}
-                    {/* {todoUpdate ? this.addUpdateTodoForm() : ""} */}
+                    {todoUpdate ? <form onSubmit={event => this.handleUpdateTodo(event)} >
+                        <p><input type="text"
+                            id="t_name"
+                            onChange={event => this.handleOnChange(event)}
+                            value={this.state.t_name} required />
+                        </p>
+                        <input type="submit" class="btn" />
+                    </form > : ""}
                 </div>
             </div>
 

@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 //import { connect } from 'react-redux'
 //import axios from 'axios'
 import { Redirect } from 'react-router-dom'
+import { FaLock, FaUser } from "react-icons/fa"
 // import { connect } from 'react-redux'
 // import addUser from '../src/actions/users'
 
@@ -15,7 +16,9 @@ class LoginUser extends Component {
             password: "",
             id: "",
             gotUser: false,
-            message: ""
+            message: "",
+            emailError: "",
+            passwordError: ""
         }
     }
     handleChange = (event) => {
@@ -25,8 +28,47 @@ class LoginUser extends Component {
     }
     handleSubmit = (event) => {
         event.preventDefault()
-        this.loginUser(event)
+        const isValid = this.validate();
+        if (isValid) {
+            this.loginUser(event)
+        }
+        this.setState({
+            email: "",
+            password: ""
+        })
+
+
     }
+
+    validate = () => {
+        let emailError = "";
+        let passwordError = "";
+
+        if (!this.state.email.includes('@')) {
+            emailError = 'Invalid email address'
+        }
+        if (!this.state.email) {
+            emailError = "Email can't be blank!"
+        }
+        if (this.state.email.length > 50) {
+            emailError = "Email length is too long!"
+        }
+        if (this.state.password.length < 4 || this.state.password.length > 16) {
+            passwordError = "Password is invalid!"
+        }
+        if (!this.state.password) {
+            passwordError = "Password can't be blank!"
+        }
+
+
+        if (emailError || passwordError) {
+            this.setState({ emailError, passwordError });
+            return false;
+        }
+
+        return true;
+    }
+
 
 
     loginUser = (event) => {
@@ -83,9 +125,9 @@ class LoginUser extends Component {
                 {renderUser ? <Redirect to={`/users/${this.state.id}`} /> : this.state.message}
                 <h1>Rapptr Labs</h1>
                 <form onSubmit={event => this.handleSubmit(event)}>
-                    <p>
+                    <div class="form-input">
                         <label>Email</label>
-                        <br></br>
+                        <span class="icon"><FaUser /></span>
                         <input
                             type="text"
                             name="email"
@@ -93,11 +135,11 @@ class LoginUser extends Component {
                             placeholder="user@rapptrlabs.com"
                             value={this.state.email}
                         />
-
-                    </p>
-                    <p>
+                        {this.state.emailError ? <div style={{ fontSize: 10, color: "red" }}>{this.state.emailError}</div> : null}
+                    </div>
+                    <div class="form-input">
                         <label>Password</label>
-                        <br></br>
+                        <span class="icon"><FaLock /></span>
                         <input
                             type="password"
                             name="password"
@@ -105,7 +147,8 @@ class LoginUser extends Component {
                             placeholder="Must be at least 4 characters"
                             value={this.state.password}
                         />
-                    </p>
+                        {this.state.passwordError ? <div style={{ fontSize: 10, color: "red" }}>{this.state.passwordError}</div> : null}
+                    </div>
                     <input type="submit" class="btn" />
                 </form>
                 {this.state.gotUser && (
