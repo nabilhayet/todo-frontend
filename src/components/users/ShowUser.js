@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-// import App from '../../App';
 import addTodo from '../../actions/todos';
-//import getTodos from '../../actions/getTodos';
 import deleteTodo from '../../actions/deleteTodo';
 import updateTodo from '../../actions/updateTodo';
-import { Link } from 'react-router-dom';
 import clearTodo from '../../actions/clearTodo';
-
-//import Home from '../../Home'
-import Navbar from '../../Navbar';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 const link = {
     width: '100px',
@@ -20,9 +13,7 @@ const link = {
     background: 'yellow',
     color: 'black',
     display: 'inline-block'
-
 }
-
 class ShowUser extends Component {
     constructor(props) {
         super(props)
@@ -49,9 +40,6 @@ class ShowUser extends Component {
             nameError: ""
         }
     }
-
-
-
     componentDidMount() {
         this.setState({
             ...this.state, currentTodos: this.props.todos
@@ -70,24 +58,21 @@ class ShowUser extends Component {
                         this.setState({
                             message: "You don't have access"
                         })
-                    } else {
+                    }
+                    else {
                         this.setState({
                             gotUser: true,
                             id: r.user.id
-
-
                         })
-
                     }
-
                 })
-        } else {
+        }
+        else {
             this.setState({
                 message: "You don't have access"
             })
         }
     }
-
     handleLogout = (event) => {
         event.preventDefault()
         localStorage.removeItem("token")
@@ -96,27 +81,22 @@ class ShowUser extends Component {
             logoutMessage: "You have successfully logged out!",
             islogout: true
         })
-
     }
-
     addTodoForm = (event) => {
         this.setState({
             createNewTodoForm: true
         })
     }
-
     handleSearchClear = () => {
         this.setState({
             ...this.state, currentTodos: this.props.todos, message: '', search: '', searchedTodo: false
         })
     }
-
     onChange(event) {
         this.setState({
             search: event.target.value
         })
     }
-
     onClick(event) {
         if (this.state.search !== '') {
             const searchBook = this.props.todos.filter((todo) => todo.name === this.state.search)
@@ -130,12 +110,8 @@ class ShowUser extends Component {
                     ...this.state, message: 'No Match'
                 })
             }
-
         }
-
     }
-
-
     createButton = () => {
         return (
             <div>
@@ -147,13 +123,11 @@ class ShowUser extends Component {
             </div>
         )
     }
-
     handleChange = event => {
         this.setState({
             [event.target.id]: event.target.value
         })
     }
-
     handleSubmit = (event) => {
         event.preventDefault()
         const isValid = this.validate();
@@ -172,25 +146,23 @@ class ShowUser extends Component {
     }
     validate = () => {
         let nameError = "";
-        if (this.state.nameError.length < 1 || this.state.nameError.length > 25) {
+        if (this.state.name.length < 1 || this.state.name.length > 25) {
             nameError = "Todo must be at least 1 character or less then 25 characters!"
         }
-
         if (nameError) {
             this.setState({ nameError });
             return false;
+        } else {
+            return true;
         }
-
-        return true;
     }
-
-
-
-
     handleUpdateTodo = (event) => {
         event.preventDefault()
         const todo = { id: this.state.t_id, name: this.state.t_name, user_id: this.state.t_user }
         this.props.updateTodo(todo)
+        this.setState({
+            t_name: ""
+        })
     }
     handleOnChange = (event) => {
         this.setState({
@@ -206,18 +178,6 @@ class ShowUser extends Component {
             updateTodo: true
         });
     }
-    // return (
-    //     <div>
-    //         <form onSubmit={event => this.handleUpdateTodo(event)} >
-    //             <p><input type="text"
-    //                 id="t_name"
-    //                 onChange={event => this.handleOnChange(event)}
-    //                 value={this.state.t_name} required />
-    //             </p>
-    //             <input type="submit" class="btn" />
-    //         </form >
-    //     </div>
-    // )
     handleDeleteTodo = (event) => {
         event.preventDefault()
         this.props.deleteTodo(event.target.id)
@@ -235,8 +195,8 @@ class ShowUser extends Component {
             return (
                 <div class="todo">
                     <li key={todo.id}>{todo.name}</li>
-                    <Link key={todo.id} style={link}><button id={todo.id} onClick={this.addUpdateTodoForm}>UPDATE</button></Link>
-                    <Link key={todo.id} style={link}><button id={todo.id} onClick={this.handleDeleteTodo}>DELETE</button></Link>
+                    <button id={todo.id} onClick={this.addUpdateTodoForm}>Update</button>
+                    <button id={todo.id} onClick={this.handleDeleteTodo}>Delete</button>
                 </div>
             )
         })
@@ -274,9 +234,6 @@ class ShowUser extends Component {
         );
     }
 };
-
-
-
 const mapDispatchToProps = dispatch => {
     return {
         addTodo: todo => { dispatch(addTodo(todo)) },
@@ -290,5 +247,4 @@ const mapStateToProps = (state) => {
         todos: state.todos.todos
     };
 };
-
 export default connect(mapStateToProps, mapDispatchToProps)(ShowUser);
