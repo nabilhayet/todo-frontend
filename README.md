@@ -3,8 +3,8 @@
                                                       
 This project lets a user add a new todo. Before creating a todo a user needs to logged in and only registered users can sign in. After creating a todo, a user can see all the existing todos. Updating or deleting a todo option available to the user. At the end, all todos are cleared when the user logs out of the profile.
 
-<a href="https://www.youtube.com/watch?v=54azoDzOMTc&t=1s">Demo</a>
-<a href="https://github.com/nabilhayet/bookstore-backend">Backend</a>
+<a href="https://www.youtube.com/watch?v=fk75oqqnAgo">Demo</a>
+<a href="https://github.com/nabilhayet/todo-backend-api">Backend</a>
 
 Table of Contents
 - [Features](#features)
